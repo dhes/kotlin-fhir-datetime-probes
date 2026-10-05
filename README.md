@@ -31,7 +31,7 @@ because 1b is a variation on 1. Each was tested for two things:
 
 | # | Folder | Change tried | Issue | Already-built program still runs | Source still compiles | What else changes |
 |---|---|---|---|---|---|---|
-| 1 | `a-field` | A third property in the constructor of `FhirDateTime.DateTime`, holding the string exactly as it was parsed | #101 | **No:** `NoSuchMethodError` on the constructor and on `copy` | Yes | Equality: a value parsed from `…00.000Z` no longer equals one parsed from `…00Z` |
+| 1 | `a-field` | A third property in the constructor of `FhirDateTime.DateTime`, holding the string exactly as it was parsed | #101 | **No:** `NoSuchMethodError` on the constructor and on `copy` | Yes | Equality: a value parsed from `2024-01-01T12:00:00.000Z` no longer equals one parsed from `2024-01-01T12:00:00Z` |
 | 1b | `a-field-hidden` | The same, with the old two-argument constructor and `copy` kept as `@Deprecated(level = HIDDEN)` declarations | #101 | Yes | Yes | Equality, as in 1. The old `copy` returns a value without the kept string |
 | 2 | `b-body` | That string kept in a property in the class body, outside the constructor | #101 | Yes | Yes | `copy()` returns a value without the kept string |
 | 3 | `c-subtype` | A new subtype of `FhirDateTime`, which the parser returns for every full date-time | #101 | **No:** `NoWhenBranchMatchedException`, `ClassCastException` | **No:** `when` is no longer exhaustive | A parsed full date-time is no longer a `DateTime` |

@@ -64,8 +64,8 @@ public data class DateTime(
 - **Already built:** fails. The program was compiled to call a constructor taking two values and a `copy` taking two;
   neither exists any more. `NoSuchMethodError`. Reading the properties, destructuring and `when` still work.
 - **Rebuilt:** compiles, because the new property has a default value.
-- **Behaviour:** a string parsed and printed back keeps `.000` and `+00:00`. A value parsed from `…00.000Z` no longer
-  equals one parsed from `…00Z`, because a constructor property takes part in equality.
+- **Behaviour:** a string parsed and printed back keeps `.000` and `+00:00`. A value parsed from `2024-01-01T12:00:00.000Z` no longer
+  equals one parsed from `2024-01-01T12:00:00Z`, because a constructor property takes part in equality.
 - **A caution about this version (read from the code, not run):** because the property holds a string, a `copy` that
   changes the time would carry the old string along. A numeric precision field, as #101 suggests, would not have that
   problem.
