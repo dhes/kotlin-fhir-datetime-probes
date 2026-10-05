@@ -1,0 +1,97 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * MODIFIED copy of fhir-model-r4/src/commonMain/kotlin/dev/ohs/fhir/model/r4/FhirDateTime.kt
+ * from ohs-foundation/kotlin-fhir at commit 0a2ab8838b7941ddde7c64e98ffc40b7eee607f0.
+ * Change made for this probe: DateTime has a third constructor property, wire, holding the text
+ * the value was parsed from; fromString passes it; toString returns it when present.
+ */
+
+@file:Suppress(
+  "RedundantVisibilityModifier",
+  "PropertyName",
+)
+
+package dev.ohs.fhir.model.r4
+
+import kotlin.Int
+import kotlin.String
+import kotlin.Suppress
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.UtcOffset
+import kotlinx.datetime.format
+
+public sealed interface FhirDateTime {
+  override fun toString(): String
+
+  public data class Year(public val `value`: Int) : FhirDateTime {
+    override fun toString(): String = value.toString()
+  }
+
+  public data class YearMonth(public val `value`: kotlinx.datetime.YearMonth) : FhirDateTime {
+    override fun toString(): String = value.toString()
+  }
+
+  public data class Date(public val date: LocalDate) : FhirDateTime {
+    override fun toString(): String = date.toString()
+  }
+
+  public data class DateTime(
+    public val dateTime: LocalDateTime,
+    public val utcOffset: UtcOffset,
+    public val wire: String? = null,
+  ) : FhirDateTime {
+    override fun toString(): String =
+      wire ?: (dateTime.format(LocalDateTime.Formats.ISO) + utcOffset.toString())
+  }
+
+  public companion object {
+    /**
+     * Parses a FHIR dateTime string (`YYYY`, `YYYY-MM`, `YYYY-MM-DD`, or a full date-time with a
+     * mandatory timezone offset).
+     *
+     * @throws IllegalStateException if [string] is not a valid FHIR dateTime.
+     */
+    public fun fromString(string: String): FhirDateTime {
+      if (string.matches(Regex("\\d{4}"))) {
+        return Year(string.toInt())
+      } else if (string.matches(Regex("\\d{4}-\\d{2}"))) {
+        return YearMonth(kotlinx.datetime.YearMonth.parse(string))
+      } else if (string.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
+        return Date(LocalDate.parse(string))
+      } else if (
+        string.matches(
+          Regex("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|([+\\-])\\d{2}:\\d{2})")
+        )
+      ) {
+        val groups =
+          Regex(
+              "(?<datetime>\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)(?<utcoffset>Z|([+\\-])\\d{2}:\\d{2})"
+            )
+            .find(string)!!
+            .groups
+        return DateTime(
+          LocalDateTime.parse(groups["datetime"]!!.value),
+          UtcOffset.parse(groups["utcoffset"]!!.value),
+          string,
+        )
+      }
+      error("Invalid string value: $string")
+    }
+  }
+}

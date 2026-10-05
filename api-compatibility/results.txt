@@ -1,0 +1,102 @@
+######## 1. caller compiled once against v1, run against each folder without recompiling
+== caller compiled against v1, run against v1
+  construct DateTime(a, b)           ok    2024-01-01T12:00:00Z
+  read dateTime and utcOffset        ok    2024-01-01T12:00 Z
+  copy(utcOffset = ...)              ok    2024-01-01T12:00:00+01:00
+  destructure (a, b)                 ok    2024-01-01T12:00 Z
+  when over a parsed date-time       ok    date-time
+  construct FhirDateTime.Year        ok    1985
+  when over a parsed year            ok    year
+  construct FhirDate.Year            ok    1985
+  12:00Z == 07:00-05:00              ok    false
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00Z
+  round trip, then copy()            ok    2024-01-01T12:00:00Z
+  parsed .000Z == parsed Z           ok    true
+== caller compiled against v1, run against a-field
+  construct DateTime(a, b)           FAIL  NoSuchMethodError: 'void dev.ohs.fhir.model.r4.FhirDateTime$DateTime.<init>(kotlinx.datetime.Loca
+  read dateTime and utcOffset        ok    2024-01-01T12:00 Z
+  copy(utcOffset = ...)              FAIL  NoSuchMethodError: 'void dev.ohs.fhir.model.r4.FhirDateTime$DateTime.<init>(kotlinx.datetime.Loca
+  destructure (a, b)                 ok    2024-01-01T12:00 Z
+  when over a parsed date-time       ok    date-time
+  construct FhirDateTime.Year        ok    1985
+  when over a parsed year            ok    year
+  construct FhirDate.Year            ok    1985
+  12:00Z == 07:00-05:00              ok    false
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00.000+00:00
+  round trip, then copy()            FAIL  NoSuchMethodError: 'dev.ohs.fhir.model.r4.FhirDateTime$DateTime dev.ohs.fhir.model.r4.FhirDateTim
+  parsed .000Z == parsed Z           ok    false
+== caller compiled against v1, run against a-field-hidden
+  construct DateTime(a, b)           ok    2024-01-01T12:00:00Z
+  read dateTime and utcOffset        ok    2024-01-01T12:00 Z
+  copy(utcOffset = ...)              ok    2024-01-01T12:00:00+01:00
+  destructure (a, b)                 ok    2024-01-01T12:00 Z
+  when over a parsed date-time       ok    date-time
+  construct FhirDateTime.Year        ok    1985
+  when over a parsed year            ok    year
+  construct FhirDate.Year            ok    1985
+  12:00Z == 07:00-05:00              ok    false
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00.000+00:00
+  round trip, then copy()            ok    2024-01-01T12:00:00Z
+  parsed .000Z == parsed Z           ok    false
+== caller compiled against v1, run against b-body
+  construct DateTime(a, b)           ok    2024-01-01T12:00:00Z
+  read dateTime and utcOffset        ok    2024-01-01T12:00 Z
+  copy(utcOffset = ...)              ok    2024-01-01T12:00:00+01:00
+  destructure (a, b)                 ok    2024-01-01T12:00 Z
+  when over a parsed date-time       ok    date-time
+  construct FhirDateTime.Year        ok    1985
+  when over a parsed year            ok    year
+  construct FhirDate.Year            ok    1985
+  12:00Z == 07:00-05:00              ok    false
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00.000+00:00
+  round trip, then copy()            ok    2024-01-01T12:00:00Z
+  parsed .000Z == parsed Z           ok    true
+== caller compiled against v1, run against c-subtype
+  construct DateTime(a, b)           ok    2024-01-01T12:00:00Z
+  read dateTime and utcOffset        FAIL  ClassCastException: class dev.ohs.fhir.model.r4.FhirDateTime$PreciseDateTime cannot be cast to cl
+  copy(utcOffset = ...)              ok    2024-01-01T12:00:00+01:00
+  destructure (a, b)                 FAIL  ClassCastException: class dev.ohs.fhir.model.r4.FhirDateTime$PreciseDateTime cannot be cast to cl
+  when over a parsed date-time       FAIL  NoWhenBranchMatchedException: 
+  construct FhirDateTime.Year        ok    1985
+  when over a parsed year            ok    year
+  construct FhirDate.Year            ok    1985
+  12:00Z == 07:00-05:00              ok    false
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00.000+00:00
+  round trip, then copy()            FAIL  ClassCastException: class dev.ohs.fhir.model.r4.FhirDateTime$PreciseDateTime cannot be cast to cl
+  parsed .000Z == parsed Z           ok    false
+== caller compiled against v1, run against d-equals
+  construct DateTime(a, b)           ok    2024-01-01T12:00:00Z
+  read dateTime and utcOffset        ok    2024-01-01T12:00 Z
+  copy(utcOffset = ...)              ok    2024-01-01T12:00:00+01:00
+  destructure (a, b)                 ok    2024-01-01T12:00 Z
+  when over a parsed date-time       ok    date-time
+  construct FhirDateTime.Year        ok    1985
+  when over a parsed year            ok    year
+  construct FhirDate.Year            ok    1985
+  12:00Z == 07:00-05:00              ok    true
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00Z
+  round trip, then copy()            ok    2024-01-01T12:00:00Z
+  parsed .000Z == parsed Z           ok    true
+== caller compiled against v1, run against e-shared
+  construct DateTime(a, b)           ok    2024-01-01T12:00:00Z
+  read dateTime and utcOffset        ok    2024-01-01T12:00 Z
+  copy(utcOffset = ...)              ok    2024-01-01T12:00:00+01:00
+  destructure (a, b)                 ok    2024-01-01T12:00 Z
+  when over a parsed date-time       FAIL  NoClassDefFoundError: dev/ohs/fhir/model/r4/FhirDateTime$Year
+  construct FhirDateTime.Year        FAIL  NoClassDefFoundError: dev/ohs/fhir/model/r4/FhirDateTime$Year
+  when over a parsed year            FAIL  NoClassDefFoundError: dev/ohs/fhir/model/r4/FhirDateTime$Year
+  construct FhirDate.Year            FAIL  NoClassDefFoundError: dev/ohs/fhir/model/r4/FhirDate$Year
+  12:00Z == 07:00-05:00              ok    false
+  round trip ...12:00:00.000+00:00   ok    2024-01-01T12:00:00Z
+  round trip, then copy()            ok    2024-01-01T12:00:00Z
+  parsed .000Z == parsed Z           ok    true
+
+######## 2. the same caller source recompiled against each folder
+v1: compiles
+a-field: compiles
+a-field-hidden: compiles
+b-body: compiles
+c-subtype: DOES NOT COMPILE
+     e: Main.kt:17:3 'when' expression must be exhaustive. Add the 'is PreciseDateTime' branch or an 'else' branch.
+d-equals: compiles
+e-shared: compiles

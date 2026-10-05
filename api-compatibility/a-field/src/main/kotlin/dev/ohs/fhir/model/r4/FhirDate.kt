@@ -1,0 +1,66 @@
+/*
+ * Copyright 2026 Open Health Stack Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Unmodified copy of fhir-model-r4/src/commonMain/kotlin/dev/ohs/fhir/model/r4/FhirDate.kt
+ * from ohs-foundation/kotlin-fhir at commit 0a2ab8838b7941ddde7c64e98ffc40b7eee607f0.
+ */
+
+@file:Suppress(
+  "RedundantVisibilityModifier",
+  "PropertyName",
+)
+
+package dev.ohs.fhir.model.r4
+
+import kotlin.Int
+import kotlin.String
+import kotlin.Suppress
+import kotlinx.datetime.LocalDate
+
+public sealed interface FhirDate {
+  override fun toString(): String
+
+  public data class Year(public val `value`: Int) : FhirDate {
+    override fun toString(): String = value.toString()
+  }
+
+  public data class YearMonth(public val `value`: kotlinx.datetime.YearMonth) : FhirDate {
+    override fun toString(): String = value.toString()
+  }
+
+  public data class Date(public val date: LocalDate) : FhirDate {
+    override fun toString(): String = date.toString()
+  }
+
+  public companion object {
+    /**
+     * Parses a FHIR date string (`YYYY`, `YYYY-MM`, or `YYYY-MM-DD`).
+     *
+     * @throws IllegalStateException if [string] is not a valid FHIR date.
+     */
+    public fun fromString(string: String): FhirDate {
+      if (string.matches(Regex("\\d{4}"))) {
+        return Year(string.toInt())
+      } else if (string.matches(Regex("\\d{4}-\\d{2}"))) {
+        return YearMonth(kotlinx.datetime.YearMonth.parse(string))
+      } else if (string.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
+        return Date(LocalDate.parse(string))
+      }
+      error("Invalid string value: $string")
+    }
+  }
+}

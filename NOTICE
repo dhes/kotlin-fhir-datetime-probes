@@ -1,0 +1,8 @@
+kotlin-fhir date-time probes
+
+This repository includes files copied from ohs-foundation/kotlin-fhir
+(https://github.com/ohs-foundation/kotlin-fhir), Copyright 2026 Open Health Stack Foundation,
+licensed under the Apache License, Version 2.0.
+
+Each copied file states at its top which file it was copied from, at which commit, and whether
+and how it was modified.
